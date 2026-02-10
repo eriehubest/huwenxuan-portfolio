@@ -1,0 +1,59 @@
+@import "tailwindcss";
+@import "../index.css";
+
+@utility flex-center {
+  @apply flex justify-center items-center;
+}
+
+.home-page {
+    overflow: visible !important;
+    transform: none !important;
+  }
+
+@layer components {
+  .home-page {
+
+    .hero {
+      @apply relative w-full h-screen flex justify-start items-center md:text-right text-center;
+
+      .text {
+        @apply relative md:w-[50%] w-full h-full flex-center flex-col md:items-end;
+
+        h1 {
+          @apply relative lg:text-8xl font-CDR border-b-1 text-6xl;
+        }
+
+        p {
+          @apply relative w-full font-CDR text-[0.7rem] lg:text-[1.2rem];
+        }
+
+        /* .hero-animate-up{
+                    @apply translate-y-[100%];
+                } */
+      }
+    }
+
+    .about {
+      @apply relative w-full h-screen flex-center;
+
+      .about-inner-container {
+        @apply lg:max-w-[30vw] text-center w-full max-w-[20vw];
+      }
+
+      .h1 {
+        @apply lg:text-6xl text-4xl;
+      }
+
+      .p {
+        @apply lg:text-xl text-[0.75rem];  
+      }
+    }
+
+
+    .journey-items {
+        .time-frame {
+            @apply flex-1 h-full w-full flex items-center opacity-0 lg:text-xl text-[0.7rem]; 
+        }
+    }
+  }
+}

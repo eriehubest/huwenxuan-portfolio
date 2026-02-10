@@ -1,0 +1,44 @@
+@import "tailwindcss";
+
+@font-face {
+  font-family: "CD-Regular";
+  src: url("/fonts/ClashDisplay/R.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "CD-Bold";
+  src: url("/fonts/ClashDisplay/B.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "CD-Light";
+  src: url("/fonts/ClashDisplay/L.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "CD-M";
+  src: url("/fonts/ClashDisplay/M.woff2") format("woff2");
+}
+
+@theme {
+  /* Color Settings */
+  
+  --color-blue-120: #e0dfdf;
+  --color-primary: #fdfcf5;
+
+  /* Font Settings */
+  
+  --font-CDR: "CD-Regular", sans-serif;
+  --font-CDL: "CD-Light", sans-serif;
+  --font-CDB: "CD-Bold", sans-serif;
+  --font-CDM: "CD-M", sans-serif;
+}
+
+body, html{
+  overscroll-behavior: none;
+  font-family: var(--font-CDR);
+  overflow-x: hidden;
+  width: 100vw;
+  min-height: 100dvh;
+  background-color: var(--color-primary);
+}
