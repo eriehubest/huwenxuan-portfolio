@@ -9,7 +9,7 @@ gsap.registerPlugin(Flip, ScrollTrigger);
 const Achievements = () => {
   const [hasCardClicked, setHasCardClicked] = useState(null);
   const prevCard = useRef('0')
-  const currentCard = useRef('0')
+  const [currentCard, setCurrentCard] = useState('0');
 
   const root = useRef(null);
 
@@ -19,20 +19,21 @@ const Achievements = () => {
 
     const group = document.querySelector(".card-container");
 
-    const toggleElement = document.querySelector(`.card${currentCard.current}`);
+    const toggleElement = document.querySelector(`.card${currentCard}`);
 
     const toggle = () => {
       const state = Flip.getState(".card-container, .card");
 
       const gallery = document.querySelector('.squished');
 
-      if (currentCard.current === prevCard.current) {
+      if (currentCard === prevCard.current) {
         gallery.prepend(toggleElement)
         gallery.classList.remove('flex-col');
         gallery.append(document.querySelector(`.card3`))
         gallery.prepend(document.querySelector(`.card1`))
 
         prevCard.current = '0';
+        setCurrentCard('0')
       }
 
       else {
@@ -50,7 +51,7 @@ const Achievements = () => {
           gallery.classList.add('flex-col');
         }
 
-        prevCard.current = currentCard.current;
+        prevCard.current = currentCard;
       }
 
       Flip.from(state, {
@@ -64,18 +65,18 @@ const Achievements = () => {
   }, [hasCardClicked]);
 
   useGSAP(() => {
-    const ctx = gsap.context(()=>{
+    const ctx = gsap.context(() => {
       const section = document.querySelector(".card-main-container");
       const cards = gsap.utils.toArray(".achievements .card");
-  
+
       gsap.set(section, { perspective: 1000 });
       gsap.set(cards, { transformOrigin: "50% 100%", rotateX: 90, opacity: 0, y: 30 });
-  
+
       const tl = gsap.timeline({
         scrollTrigger: {
           trigger: ".achievements",
-          duration: 1,
-          start: () => `start -=${window.innerHeight * 6}`,
+          duration: 2,
+          start: () => `top -=${window.innerHeight * 6}`,
           toggleActions: "play none none none",
           onUpdate: () => { console.log('update') }
         }
@@ -87,10 +88,10 @@ const Achievements = () => {
         duration: 0.8,
         ease: "power3.out",
         stagger: 0.12,
-      }).to('.achievement-description' , {
+      }).to('.achievement-description', {
         opacity: 0,
         duration: 0.6,
-      })
+      }, "<")
     })
 
     return () => ctx.revert()
@@ -107,19 +108,34 @@ const Achievements = () => {
       <div className="card-main-container w-screen h-screen relative z-10">
         <div className="card-container relative flex flex-between items-center w-full h-full">
           <div className="flex-1 flex w-full h-full squished">
-            <div className="card card1 flex-2 flex-center w-full h-full bg-neutral-300 opacity-0"
-              onClick={() => { setHasCardClicked(!hasCardClicked); currentCard.current = '1' }}>
-              MT
+            <div className="card card1 flex-3 flex flex-col justify-around items-center w-full h-full bg-[#FFDBBB] opacity-0 overflow-hidden hover:bg-[#FFDBBB]/80 cursor-pointer"
+              onClick={() => { setHasCardClicked(v => !v); setCurrentCard('1') }}>
+              <h1 className="text-[3rem] font-CDR transition-all">
+                Maths
+              </h1>
+              <p className={`undisplayed-seciton transition-all duration-300 ${currentCard === '1' ? 'opacity-100 flex' : 'opacity-0 hidden'}`}>
+                Paragraph
+              </p>
             </div>
-            <div className="card card2 flex-2 flex-center w-full h-full bg-blue-200 opacity-0"
-              onClick={() => { setHasCardClicked(!hasCardClicked); currentCard.current = '2' }}
+            <div className="card card2 flex-3 flex flex-col justify-around items-center w-full h-full bg-[#CCBEB1] opacity-0 hover:bg-[#CCBEB1]/80 cursor-pointer"
+              onClick={() => { setHasCardClicked(!hasCardClicked); setCurrentCard('2') }}
             >
-              PJ
+              <h1 className="text-[3rem] font-CDR transition-all text-center">
+                Computer Science
+              </h1>
+              <p className={`undisplayed-seciton transition-all duration-300 ${currentCard === '2' ? 'opacity-100 flex' : 'opacity-0 hidden'}`}>
+                Paragraph
+              </p>
             </div>
-            <div className="card card3 flex-2 flex-center w-full h-full bg-amber-100 opacity-0"
-              onClick={() => { setHasCardClicked(!hasCardClicked); currentCard.current = '3' }}
+            <div className="card card3 flex-3 flex flex-col justify-around items-center w-full h-full bg-[#997E67] opacity-0 hover:bg-[#997E67]/80 cursor-pointer"
+              onClick={() => { setHasCardClicked(!hasCardClicked); setCurrentCard('3') }}
             >
-              CS
+              <h1 className="text-[3rem] font-CDR transition-all">
+                Projects
+              </h1>
+              <p className={`undisplayed-seciton transition-all duration-300 ${currentCard === '3' ? 'opacity-100 flex' : 'opacity-0 hidden'}`}>
+                Paragraph
+              </p>
             </div>
           </div>
         </div>
