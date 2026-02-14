@@ -243,11 +243,11 @@ export default class World {
             this.journeyAnimation.progress(journey.roundedProgress)
         }
 
-        // if (home.roundedProgress === 1) {
-        //     this.customMesh.rotation.y += this.appInstance.time.delta / 10000;
-        //     this.customMesh.rotation.z += this.appInstance.time.delta / 10000;
-        //     this.customMesh.rotation.x += this.appInstance.time.delta / 10000;
-        // }
+        if (home.roundedProgress !== 1) {
+            this.customMesh.rotation.y += this.appInstance.time.delta / 10000;
+            this.customMesh.rotation.z += this.appInstance.time.delta / 10000;
+            this.customMesh.rotation.x += this.appInstance.time.delta / 10000;
+        }
     }
 
     onResize() {
@@ -265,10 +265,10 @@ export default class World {
 
         this.heroAnimation.set(this.assemble, { t: 0 })
 
-        this.heroAnimation.to(this.assemble, {
+        gsap.to(this.assemble, {
             t: 1,
             duration: 1.6,
-            ease: "power3.inOut",
+            // ease: "power3.inOut",
             onUpdate: this.updatePositions,
         });
 
@@ -276,8 +276,15 @@ export default class World {
         await journey.ready;
 
         this.journeyAnimation = gsap.timeline({ paused: true });
-        this.journeyAnimation.to(this.customMesh.rotation, { duration: 1, y: 4 })
+        // this.journeyAnimation.to(this.customMesh.rotation, { duration: 1, y: 4 })
 
+        // this.journeyAnimation.to(this.customMesh.scale, {
+        //     x: 0,
+        //     y: 0,
+        //     z: 0,
+        //     duration: 1,
+        //     ease: "power2.inOut"
+        // }, "<");
     }
 
     destructor() { }

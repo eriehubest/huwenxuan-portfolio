@@ -1,0 +1,20 @@
+/* parent wrapper */
+.achievementsWrap {
+  position: relative;
+}
+
+/* when active, the clicked card fills the wrapper */
+.card.is-active {
+  position: absolute;
+  inset: 20px; /* matches your p-5 (20px) */
+  width: auto !important;
+  height: auto !important;
+  flex: none !important;
+  z-index: 10;
+}
+
+/* hide others while active */
+.card.is-hidden {
+  pointer-events: none;
+  z-index: 0;
+}

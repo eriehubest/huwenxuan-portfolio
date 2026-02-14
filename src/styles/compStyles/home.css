@@ -6,13 +6,38 @@
 }
 
 .home-page {
-    overflow: visible !important;
-    transform: none !important;
-  }
+  overflow: visible !important;
+  transform: none !important;
+}
+
+.time-text-cont {
+  position: relative;
+  transform-style: preserve-3d;
+  perspective: 900px; /* "camera distance" */
+}
+
+.yearReal {
+  position: relative;
+  z-index: 2;
+}
+
+.yearShadow {
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform-origin: top center;
+  transform: rotateX(75deg) scaleY(1.4);
+  filter: blur(10px);
+  opacity: 0.4;
+  z-index: 1;
+  pointer-events: none;
+
+  -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,0.9), rgba(0,0,0,0));
+  mask-image: linear-gradient(to bottom, rgba(0,0,0,0.9), rgba(0,0,0,0));
+}
 
 @layer components {
   .home-page {
-
     .hero {
       @apply relative w-full h-screen flex justify-start items-center md:text-right text-center;
 
@@ -45,15 +70,14 @@
       }
 
       .p {
-        @apply lg:text-xl text-[0.75rem];  
+        @apply lg:text-xl text-[0.75rem];
       }
     }
 
-
     .journey-items {
-        .time-frame {
-            @apply flex-1 h-full w-full flex items-center opacity-0 lg:text-xl text-[0.7rem]; 
-        }
+      .time-frame {
+        @apply flex-1 h-full w-full flex items-center opacity-0 lg:text-xl text-[0.7rem];
+      }
     }
   }
 }

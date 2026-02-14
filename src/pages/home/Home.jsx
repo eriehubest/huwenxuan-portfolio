@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useLayoutEffect, useState } from 'react'
 import gsap from 'gsap'
 
 import '../../styles/compStyles/home.css'
@@ -6,6 +6,7 @@ import constants from '../../javascript/constants'
 import { useGSAP } from '@gsap/react'
 import { SplitText, ScrollTrigger } from 'gsap/all'
 import AnimationTracker from '../../javascript/three/AnimationTracker'
+import Achievements from '../achievements/achievements'
 
 gsap.registerPlugin(SplitText, ScrollTrigger)
 
@@ -56,7 +57,7 @@ const Home = () => {
                     end: 'bottom top',
                     scrub: true,
 
-                    onUpdate: (self)=>{
+                    onUpdate: (self) => {
                         // console.log(self.progress)
                         animationTracker.setProgress('home', self.progress)
                     }
@@ -89,6 +90,7 @@ const Home = () => {
                     pin: true,
                     scrub: true,
                     anticipatePin: 1,
+                    pinSpacing: true,
                     // markers: true, 
                     onUpdate: (self) => {
                         const last = tp.reduce((sum, n) => sum + n, 0);
@@ -98,14 +100,23 @@ const Home = () => {
 
                         const p = gsap.utils.clamp(0, 1, (self.progress - start) / (end - start));
                         const idx = Math.min(digits.length - 1, Math.floor(p * digits.length));
-                        document.querySelector(".yearDigit").textContent = digits[idx];
-                        animationTracker.setProgress('journey', self.progress);
+
+                        const d = digits[idx];
+                        document.querySelector(".yearDigit").textContent = d;
+                        document.querySelector(".yearShadowDigit").textContent = d;
+
+                        const shadow = document.querySelector(".yearShadow");
+                        gsap.set(shadow, {
+                            opacity: 0.5 + 0.25 * self.progress,
+                            rotateX: 70 + 10 * self.progress,  // 70° -> 80°
+                            y: 5 + 20 * self.progress
+                        });
                     }
                 }
             })
 
             gsap.set(".scrollIndicator", { scaleY: 0 })
-            
+
             // Start Delay
             journeyTimeline.to({}, { duration: tp[0] });
 
@@ -134,6 +145,7 @@ const Home = () => {
                 duration: tp[3],
             }).to('.time-text-cont', {
                 translateX: 0,
+                opacity: 1,
                 duration: tp[3],
             }, "<")
 
@@ -151,6 +163,7 @@ const Home = () => {
                 duration: 0.2 + 0.5 * (document.querySelectorAll(".time-frame").length - 1),
             }, "<");
 
+           ScrollTrigger.refresh();
         });
 
         return () => {
@@ -158,10 +171,14 @@ const Home = () => {
             heroDownSplitText?.revert?.();
             ctx.revert();
         };
-    });
+    }, []);
 
     useEffect(() => {
         setCurrentMaxJourney(constants.home.journey.length);
+    }, []);
+
+    useLayoutEffect(() => {
+        ScrollTrigger.refresh();
     }, []);
 
     const constantMap = (_originalMap, containerClass = ``) => {
@@ -209,12 +226,23 @@ const Home = () => {
                 </div>
 
                 <div className="journey h-screen w-screen absolute flex items-center">
-                    <div className="journey-time-text w-[50dvw] h-[85dvh] relative box-border px-5 flex-center text-[10rem] text-neutral-500 font-CDM">
-                        <h1 className="relative inline-block overflow-hidden">
-                            <div className="time-text-cont translate-x-[150%]">
-                                202<div className='inline-block yearDigit w-[1ch]'>2</div>
+                    <div className="journey-time-text w-[50dvw] h-[100dvh] relative box-border flex flex-col justify-around">
+                        <div className="yearBottom w-full flex-center overflow-hidden">
+                            <div className="relative flex justify-center items-center overflow-visible px-10 opacity-50 text-[10rem] font-CDM">
+                                <div className="yearWrap relative flex justify-center items-center overflow-visible opacity-100">
+                                    <div className="time-text-cont translate-x-[150%] relative opacity-0">
+                                        <span className="yearReal">
+                                            202<div className="inline-block yearDigit w-[1ch]">2</div>
+                                        </span>
+
+                                        {/* shadow / projection */}
+                                        <span className="yearShadow" aria-hidden="true">
+                                            202<span className="yearShadowDigit">2</span>
+                                        </span>
+                                    </div>
+                                </div>
                             </div>
-                        </h1>
+                        </div>
                     </div>
 
                     <div className="journey-items w-[50dvw] h-[85dvh] relative box-border px-5 flex flex-col justify-around">
@@ -233,9 +261,7 @@ const Home = () => {
                 </div>
             </div>
 
-            <div className="my-information w-screen min-h-screen flex-center relative">
-                My Information
-            </div>
+            <Achievements />
         </div>
     )
 }
