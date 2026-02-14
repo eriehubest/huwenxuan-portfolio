@@ -28,8 +28,9 @@ const Achievements = () => {
 
       if (currentCard.current === prevCard.current) {
         gallery.prepend(toggleElement)
-
         gallery.classList.remove('flex-col');
+        gallery.append(document.querySelector(`.card3`))
+        gallery.prepend(document.querySelector(`.card1`))
 
         prevCard.current = '0';
       }
@@ -75,7 +76,7 @@ const Achievements = () => {
           trigger: ".achievements",
           duration: 1,
           start: () => `start -=${window.innerHeight * 6}`,
-          toggleActions: "play none none reverse",
+          toggleActions: "play none none none",
           onUpdate: () => { console.log('update') }
         }
       })
@@ -86,7 +87,10 @@ const Achievements = () => {
         duration: 0.8,
         ease: "power3.out",
         stagger: 0.12,
-      });
+      }).to('.achievement-description' , {
+        opacity: 0,
+        duration: 0.6,
+      })
     })
 
     return () => ctx.revert()
