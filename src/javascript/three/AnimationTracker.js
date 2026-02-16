@@ -13,6 +13,8 @@ export default class AnimationTracker {
 
         this.triggerSection = {};
 
+        this.currentFocus = null;
+
         this._ensureSection = (name) => {
             if (!this.triggerSection[name]) {
                 let resolveReady;
@@ -24,6 +26,8 @@ export default class AnimationTracker {
                     _resolveReady: resolveReady,
                     currentProgress: 0,
                     roundedProgress: 0,
+
+                    focus: false,
                 };
             }
             return this.triggerSection[name];
@@ -31,7 +35,7 @@ export default class AnimationTracker {
 
         // Home
 
-        this.setProgress('home', 0)
+        const home = this.setProgress('home', 0)
 
         // Journey
 
@@ -46,17 +50,38 @@ export default class AnimationTracker {
             this.triggerSection.journey.prefSum.push(_index >= 1 ? round(_timeVal + this.triggerSection.journey.prefSum[_index - 1]) : round(_timeVal))
         })
 
+        // Achievements
+
+        const achievements = this._ensureSection("achievements");
+
         // console.log(this.triggerSection)
     }
 
-    setProgress(name, progress) {
+    setProgress(name, progress, enforcedTrue = false) {
         const section = this._ensureSection(name);
 
         if (!section.initialized) {
             section.initialized = true;
             section._resolveReady(); // resolves the promise exactly once
             section._resolveReady = null;
+
         }
+
+        if (!enforcedTrue){ 
+            section.focus = progress === 1  ? false : true;
+
+            if (section.focus && this.currentFocus !== name){
+                this.currentFocus = name;
+            } 
+        }
+        else {
+            section.focus = enforcedTrue;
+            if (section.focus && this.currentFocus !== name){
+                this.currentFocus = name;
+            }
+        }
+
+        console.log(this.currentFocus)
 
         section.currentProgress = progress;
         section.roundedProgress = Number(progress.toFixed(3));

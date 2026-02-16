@@ -11,6 +11,8 @@ import Achievements from '../achievements/achievements'
 gsap.registerPlugin(SplitText, ScrollTrigger)
 
 const Home = () => {
+    const [showSettings, setShowSettings] = useState(null);
+
     const [currentMaxJourney, setCurrentMaxJourney] = useState(0);
 
     useGSAP(() => {
@@ -93,6 +95,7 @@ const Home = () => {
                     pinSpacing: true,
                     // markers: true, 
                     onUpdate: (self) => {
+                        animationTracker.setProgress('journey', self.progress)
                         const last = tp.reduce((sum, n) => sum + n, 0);
                         const restSum = tp.slice(0, -1).reduce((sum, n) => sum + n, 0);
                         const start = restSum / last;
@@ -163,7 +166,7 @@ const Home = () => {
                 duration: 0.2 + 0.5 * (document.querySelectorAll(".time-frame").length - 1),
             }, "<");
 
-           ScrollTrigger.refresh();
+            ScrollTrigger.refresh();
         });
 
         return () => {
@@ -172,6 +175,55 @@ const Home = () => {
             ctx.revert();
         };
     }, []);
+
+    useGSAP(() => {
+        const ctx = gsap.context(() => {
+            const settingsContainer = document.querySelector('.settings');
+            const settingsToggle = document.querySelector('.settings .toggle');
+            const settingsPage = document.querySelector('.settings .settings-page');
+
+            if ( showSettings === null )
+            {
+                settingsPage.classList.add('hidden')
+
+                gsap.set(settingsPage, {
+                    xPercent: -100,
+                })
+                
+                return true;
+            }
+            
+            if ( showSettings )
+            {
+                settingsPage.classList.remove('hidden')
+                settingsPage.classList.add('flex');
+                    
+                gsap.killTweensOf(settingsPage)
+                gsap.to(settingsPage, {
+                    xPercent: 0,
+                    ease: 'power2.out',
+                    duration: 1.5
+                })
+            } else 
+            {
+                gsap.killTweensOf(settingsPage);
+                gsap.to(settingsPage, {
+                    xPercent: -100,
+                    ease: 'power2.out',
+                    duration: 1.5,
+                    onComplete: () => {
+                        settingsPage.classList.remove('flex');
+                        settingsPage.classList.add('hidden');
+                    }
+                })
+                
+            }
+        })
+        
+        return () => {
+            ctx.revert();
+        }
+    }, [showSettings]);
 
     useEffect(() => {
         setCurrentMaxJourney(constants.home.journey.length);
@@ -199,6 +251,27 @@ const Home = () => {
 
     return (
         <div className='home-page relative'>
+
+            <div className="settings fixed w-screen h-screen z-1000 top-0 left-0 flex justify-start items-start">
+                <div
+                    className="toggle relative click-toggle w-[30px] h-[30px] m-5 cursor-pointer flex flex-col justify-around items-center z-1001"
+                    onClick={ ()=>{setShowSettings(v => ( typeof v === 'undefined' ? true : !v)); console.log(showSettings)} }
+                >
+                    <div className="relative undeerline w-full bg-black h-[2px]"></div>
+                    <div className="relative undeerline bg-black  w-full h-[2px]"></div>
+                    <div className="relative undeerline w-full bg-black h-[2px]"></div>
+                </div>
+
+                <div className={`settings-page absolute top-0 left-0 w-screen h-screen flex-col justify-center items-center backdrop-blur-xl p-20`}>
+                    <h2 className='text-[3rem] leading-2 w-full'>
+                        Current Page:
+                    </h2>
+
+                    <h1 className='text-[10rem] font-CDR w-full'>
+                        Achievements
+                    </h1>
+                </div>
+            </div>
 
             <div className="hero relative">
                 <div className="text">
