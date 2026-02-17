@@ -269,7 +269,7 @@ const Achievements = ({ ClickChangeFunction, HoverChangeFunction }) => {
     return (
       <div
         key={_index}
-        className={`card card${_index + 1} flex-3 flex flex-col justify-around items-center w-full h-full opacity-0 overflow-hidden cursor-pointer`}
+        className={`card card${_index + 1} flex-2 flex flex-col justify-around items-center w-full h-full opacity-0 overflow-hidden cursor-pointer`}
         style={{ backgroundColor: colorInfor[_index] }}
         onClick={() => {
           setHasCardClicked((v) => !v);
@@ -287,7 +287,7 @@ const Achievements = ({ ClickChangeFunction, HoverChangeFunction }) => {
           className={`flex-0 card-info-${_index + 1} undisplayed-seciton opacity-0 w-full h-full overflow-hidden p-5`}
           style={{ height: 0 }}
           dangerouslySetInnerHTML={{
-            __html: constants.home.achievements[2][_index] ? constants.home.achievements[2][_index] : '',
+            __html: constants.home.achievements[2][_index],
           }}
         />
       </div>

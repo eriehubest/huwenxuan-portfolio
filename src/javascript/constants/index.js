@@ -119,41 +119,49 @@ const constants =
                     ['p', '2025 - AMC 12B Distinction'],
                 ],
                 [
-                    `
-                        <div class="w-full h-full bg-black/5 rounded-lg overflow-x-hidden flex">
-                            <div class="certificates flex-1 w-full h-full flex justify-center items-center">
-                            <h1>Achievements</h1>
+                    [
+                        [`
+                            <div class="w-full h-full bg-black/5 rounded-lg overflow-x-hidden flex">
+                                <div class="certificates flex-1 w-full h-full flex justify-center items-center">
+                                    <h1 class="text-3xl">Achievements</h1>
+                                </div>
+
+                                <div class="animation flex-1 w-full h-full flex justify-center items-center">
+                                    <div class="layered-animations">
+                                        <svg class="small shape color-red" viewBox="0 0 96 96">
+                                            <rect width="48" height="48" x="24" y="24" fill-rule="evenodd" stroke-linecap="square"></rect>
+                                        </svg>
+
+                                        <svg class="small shape color-red" viewBox="0 0 96 96">
+                                            <polygon fill-rule="evenodd" points="48 17.28 86.4 80.11584 9.6 80.11584" stroke-linecap="square"></polygon>
+                                        </svg>
+
+                                        <svg class="small shape color-red" viewBox="0 0 96 96">
+                                            <circle cx="48" cy="48" r="32" fill-rule="evenodd" stroke-linecap="square"></circle>
+                                        </svg>
+
+                                        <svg class="shape" viewBox="0 0 96 96">
+                                            <circle cx="48" cy="48" r="28" fill-rule="evenodd" stroke-linecap="square"></circle>
+                                        </svg>
+
+                                        <svg class="shape" viewBox="0 0 96 96">
+                                            <rect width="48" height="48" x="24" y="24" fill-rule="evenodd" stroke-linecap="square"></rect>
+                                        </svg>
+
+                                        <svg class="shape" viewBox="0 0 96 96">
+                                            <polygon fill-rule="evenodd" points="48 17.28 86.4 80.11584 9.6 80.11584" stroke-linecap="square"></polygon>
+                                        </svg>
+                                    </div>
+                                </div>
                             </div>
+                        `]
+                    ]
+                ],
 
-                            <div class="animation flex-1 w-full h-full flex justify-center items-center">
-                            <div class="layered-animations">
-                                <svg class="small shape color-red" viewBox="0 0 96 96">
-                                <rect width="48" height="48" x="24" y="24" fill-rule="evenodd" stroke-linecap="square"></rect>
-                                </svg>
-
-                                <svg class="small shape color-red" viewBox="0 0 96 96">
-                                <polygon fill-rule="evenodd" points="48 17.28 86.4 80.11584 9.6 80.11584" stroke-linecap="square"></polygon>
-                                </svg>
-
-                                <svg class="small shape color-red" viewBox="0 0 96 96">
-                                <circle cx="48" cy="48" r="32" fill-rule="evenodd" stroke-linecap="square"></circle>
-                                </svg>
-
-                                <svg class="shape" viewBox="0 0 96 96">
-                                <circle cx="48" cy="48" r="28" fill-rule="evenodd" stroke-linecap="square"></circle>
-                                </svg>
-
-                                <svg class="shape" viewBox="0 0 96 96">
-                                <rect width="48" height="48" x="24" y="24" fill-rule="evenodd" stroke-linecap="square"></rect>
-                                </svg>
-
-                                <svg class="shape" viewBox="0 0 96 96">
-                                <polygon fill-rule="evenodd" points="48 17.28 86.4 80.11584 9.6 80.11584" stroke-linecap="square"></polygon>
-                                </svg>
-                            </div>
-                            </div>
-                        </div>
-                    `
+                [
+                    [
+                        `Achievemenets`
+                    ]
                 ]
             ]
     },

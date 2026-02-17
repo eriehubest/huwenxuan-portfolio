@@ -386,6 +386,12 @@ const Home = () => {
 
     return (
         <div className='home-page relative'>
+            <div className="pageIndicator fixed bottom-0 w-full h-[50px] right-0 flex-center z-999">
+                <h1 className='text-center font-CDM text-xl'>
+                    {focus}
+                </h1>
+            </div>
+
             <div className={`cursor-dot pointer-events-none fixed top-0 left-0 w-4 h-4 rounded-full bg-gray-400 z-9999`} />
 
             <div className="settings fixed z-1000 top-0 left-0 flex justify-start items-start">
@@ -441,7 +447,7 @@ const Home = () => {
                 <div className="journey h-screen w-screen absolute flex items-center">
                     <div className="journey-time-text w-[50dvw] h-[100dvh] relative box-border flex flex-col justify-around">
                         <div className="yearBottom w-full flex-center overflow-hidden">
-                            <div className="relative flex justify-center items-center overflow-visible px-10 opacity-50 text-[10rem] font-CDM">
+                            <div className="relative flex justify-center items-center overflow-visible px-10 opacity-50 text-[6rem] lg:text-[10rem] font-CDM">
                                 <div className="yearWrap relative flex justify-center items-center overflow-visible opacity-100">
                                     <div className="time-text-cont translate-x-[150%] relative opacity-0">
                                         <span className="yearReal">
