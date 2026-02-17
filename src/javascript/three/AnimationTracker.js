@@ -15,6 +15,8 @@ export default class AnimationTracker {
 
         this.currentFocus = null;
 
+        this._listeners = new Set();
+
         this._ensureSection = (name) => {
             if (!this.triggerSection[name]) {
                 let resolveReady;
@@ -57,34 +59,49 @@ export default class AnimationTracker {
         // console.log(this.triggerSection)
     }
 
+    setFocus(name) {
+        if (this.currentFocus !== name) {
+            this.currentFocus = name;
+            this._emitFocus?.(name);
+        }
+    }
+
+    onFocusChange(fn) {
+        this._listeners.add(fn);
+        return () => this._listeners.delete(fn);
+    }
+
+    _emitFocus(name) {
+        for (const fn of this._listeners) fn(name);
+    }
+
     setProgress(name, progress, enforcedTrue = false) {
         const section = this._ensureSection(name);
 
         if (!section.initialized) {
             section.initialized = true;
-            section._resolveReady(); // resolves the promise exactly once
+            section._resolveReady();
             section._resolveReady = null;
 
         }
 
-        if (!enforcedTrue){ 
-            section.focus = progress === 1  ? false : true;
+        let nextFocus = this.currentFocus;
 
-            if (section.focus && this.currentFocus !== name){
-                this.currentFocus = name;
-            } 
-        }
-        else {
-            section.focus = enforcedTrue;
-            if (section.focus && this.currentFocus !== name){
-                this.currentFocus = name;
-            }
-        }
+        // if (!enforcedTrue) {
+        //     section.focus = progress < 1 && progress >= 0 ? true : false;
+        //     if (section.focus) nextFocus = name;
+        // } else {
+        //     section.focus = enforcedTrue;
+        //     if (section.focus) nextFocus = name;
+        // }
 
-        console.log(this.currentFocus)
+        // if (nextFocus !== this.currentFocus) {
+        //     this.currentFocus = nextFocus;
+        //     this._emitFocus(this.currentFocus);
+        // }
 
         section.currentProgress = progress;
-        section.roundedProgress = Number(progress.toFixed(3));
+        section.roundedProgress = Number(progress.toFixed(10));
 
         // console.log(section.roundedProgress)
     }

@@ -1,4 +1,4 @@
-import React, { useEffect, useLayoutEffect, useState } from 'react'
+import React, { useEffect, useLayoutEffect, useState, useRef } from 'react'
 import gsap from 'gsap'
 
 import '../../styles/compStyles/home.css'
@@ -10,16 +10,52 @@ import Achievements from '../achievements/achievements'
 
 gsap.registerPlugin(SplitText, ScrollTrigger)
 
+const animationTracker = AnimationTracker.getInstance();
+
 const Home = () => {
     const [showSettings, setShowSettings] = useState(null);
-
     const [currentMaxJourney, setCurrentMaxJourney] = useState(0);
+    const [isHover, setIsHover] = useState(false);
+    const [isMouseClick, setIsMouseClick] = useState(false);
+
+    const [focus, setFocus] = useState(animationTracker.currentFocus);
+
+    const topBarRef = useRef(null);
+    const midBarRef = useRef(null);
+    const botBarRef = useRef(null);
+
+    useGSAP(() => {
+        const dot = document.querySelector(".cursor-dot");
+        if (!dot) return;
+
+        gsap.set(dot, { xPercent: -50, yPercent: -50 });
+
+        const xTo = gsap.quickTo(dot, "x", {
+            duration: 0.3,
+            ease: "power3.out"
+        });
+
+        const yTo = gsap.quickTo(dot, "y", {
+            duration: 0.3,
+            ease: "power3.out"
+        });
+
+        const move = (e) => {
+            xTo(e.clientX);
+            yTo(e.clientY);
+        };
+
+        window.addEventListener("mousemove", move);
+
+        return () => {
+            window.removeEventListener("mousemove", move);
+        };
+    }, []);
 
     useGSAP(() => {
         let heroUpSplitText;
         let heroDownSplitText;
         const ctx = gsap.context(() => {
-            const animationTracker = AnimationTracker.getInstance();
 
             //
             // HERO
@@ -62,7 +98,10 @@ const Home = () => {
                     onUpdate: (self) => {
                         // console.log(self.progress)
                         animationTracker.setProgress('home', self.progress)
-                    }
+                    },
+
+                    onEnter: () => animationTracker.setFocus("home"),
+                    onEnterBack: () => animationTracker.setFocus("home"),
                 }
             })
 
@@ -114,7 +153,10 @@ const Home = () => {
                             rotateX: 70 + 10 * self.progress,  // 70° -> 80°
                             y: 5 + 20 * self.progress
                         });
-                    }
+                    },
+
+                    onEnter: () => animationTracker.setFocus("journey"),
+                    onEnterBack: () => animationTracker.setFocus("journey"),
                 }
             })
 
@@ -182,30 +224,48 @@ const Home = () => {
             const settingsToggle = document.querySelector('.settings .toggle');
             const settingsPage = document.querySelector('.settings .settings-page');
 
-            if ( showSettings === null )
-            {
+            const top = topBarRef.current;
+            const mid = midBarRef.current;
+            const bot = botBarRef.current;
+            if (!top || !mid || !bot) return;
+
+            gsap.set([top, bot], { transformOrigin: "50% 50%" });
+
+            const burgerForTl = gsap.timeline({ paused: true, defaults: { duration: 0.25, ease: "power2.out" } });
+            burgerForTl
+                .to(top, { y: 10, rotate: 45, background: '#ffffff' }, 0)
+                .to(bot, { y: -10, rotate: -45, background: '#ffffff' }, 0)
+                .to(mid, { opacity: 0, scaleX: 0, background: '#ffffff' }, 0);
+
+            const burgerBackTl = gsap.timeline({ paused: true, defaults: { duration: 0.25, ease: "power2.out" } });
+            burgerBackTl
+                .to(top, { y: 0, rotate: 0, background: "#000000" }, 0)
+                .to(bot, { y: 0, rotate: 0, background: "#000000" }, 0)
+                .to(mid, { opacity: 1, scaleX: 1, background: "#000000" }, 0);
+
+            if (showSettings === null) {
                 settingsPage.classList.add('hidden')
 
                 gsap.set(settingsPage, {
                     xPercent: -100,
                 })
-                
+
                 return true;
             }
-            
-            if ( showSettings )
-            {
+
+            if (showSettings) {
                 settingsPage.classList.remove('hidden')
                 settingsPage.classList.add('flex');
-                    
+
                 gsap.killTweensOf(settingsPage)
                 gsap.to(settingsPage, {
                     xPercent: 0,
                     ease: 'power2.out',
                     duration: 1.5
                 })
-            } else 
-            {
+
+                burgerForTl.play();
+            } else {
                 gsap.killTweensOf(settingsPage);
                 gsap.to(settingsPage, {
                     xPercent: -100,
@@ -216,21 +276,96 @@ const Home = () => {
                         settingsPage.classList.add('hidden');
                     }
                 })
-                
+
+                burgerBackTl.play();
             }
         })
-        
+
         return () => {
             ctx.revert();
         }
     }, [showSettings]);
 
+    useGSAP(() => {
+        const ctx = gsap.context(() => {
+            if (!isMouseClick)
+                return;
+
+            const cursorDot = document.querySelector('.cursor-dot');
+
+            gsap.to(cursorDot, {
+                width: 30,
+                height: 30,
+                duration: 0.15,
+                background: "#ffffff"
+            })
+
+            gsap.to(cursorDot, {
+                width: isHover ? 20 : 15,
+                height: isHover ? 20 : 15,
+                duration: 0.14,
+                background: "#99a1af",
+                onComplete: () => {
+                    setIsMouseClick(false);
+                }
+            }, ">")
+        })
+
+        // console.log('changed')
+
+        return () => { ctx.revert() };;
+    }, [isMouseClick])
+
+    useGSAP(() => {
+        const ctx = gsap.context(() => {
+            if (isMouseClick) {
+                return;
+            }
+
+            const cursorDot = document.querySelector('.cursor-dot');
+
+            if (isHover) {
+                gsap.to(cursorDot, {
+                    width: 20,
+                    height: 20,
+                    opacity: 0.6,
+                    duration: 0.2,
+                })
+            } else {
+                gsap.to(cursorDot, {
+                    width: 15,
+                    height: 15,
+                    opacity: 1,
+                    duration: 0.2,
+                })
+            }
+        })
+
+        return () => ctx.revert();
+    }, [isHover])
+
     useEffect(() => {
         setCurrentMaxJourney(constants.home.journey.length);
     }, []);
 
-    useLayoutEffect(() => {
-        ScrollTrigger.refresh();
+    useEffect(() => {
+        return animationTracker.onFocusChange(setFocus);
+    }, []);
+
+    useEffect(() => {
+        const sync = () => {
+            if (!document.hidden) {
+                ScrollTrigger.refresh(true);
+            }
+        };
+
+        document.addEventListener("visibilitychange", sync);
+        window.addEventListener("focus", sync);
+
+        return () => {
+            document.removeEventListener("visibilitychange", sync);
+            window.removeEventListener("focus", sync);
+        };
     }, []);
 
     const constantMap = (_originalMap, containerClass = ``) => {
@@ -251,24 +386,29 @@ const Home = () => {
 
     return (
         <div className='home-page relative'>
+            <div className={`cursor-dot pointer-events-none fixed top-0 left-0 w-4 h-4 rounded-full bg-gray-400 z-9999`} />
 
-            <div className="settings fixed w-screen h-screen z-1000 top-0 left-0 flex justify-start items-start">
+            <div className="settings fixed z-1000 top-0 left-0 flex justify-start items-start">
                 <div
                     className="toggle relative click-toggle w-[30px] h-[30px] m-5 cursor-pointer flex flex-col justify-around items-center z-1001"
-                    onClick={ ()=>{setShowSettings(v => ( typeof v === 'undefined' ? true : !v)); console.log(showSettings)} }
+                    onClick={() => { setIsMouseClick(true); setShowSettings(v => (typeof v === 'undefined' ? true : !v)); }}
+                    onMouseEnter={() => { setIsHover(true) }}
+                    onMouseLeave={() => { setIsHover(false) }}
                 >
-                    <div className="relative undeerline w-full bg-black h-[2px]"></div>
-                    <div className="relative undeerline bg-black  w-full h-[2px]"></div>
-                    <div className="relative undeerline w-full bg-black h-[2px]"></div>
+                    <div ref={topBarRef} className="relative undeerline w-full bg-black h-[2px]"></div>
+                    <div ref={midBarRef} className="relative undeerline bg-black w-full h-[2px]"></div>
+                    <div ref={botBarRef} className="relative undeerline w-full bg-black h-[2px]"></div>
                 </div>
 
-                <div className={`settings-page absolute top-0 left-0 w-screen h-screen flex-col justify-center items-center backdrop-blur-xl p-20`}>
+                <div className={`settings-page inset-0 absolute top-0 left-0 w-screen h-screen flex-col justify-center items-center bg-neutral-700 p-20 text-white`}>
+                    <div className="settings-strips absolute inset-0 flex pointer-none z-0 " aria-hidden="true" />
+
                     <h2 className='text-[3rem] leading-2 w-full'>
                         Current Page:
                     </h2>
 
                     <h1 className='text-[10rem] font-CDR w-full'>
-                        Achievements
+                        {focus}
                     </h1>
                 </div>
             </div>
@@ -334,7 +474,7 @@ const Home = () => {
                 </div>
             </div>
 
-            <Achievements />
+            <Achievements ClickChangeFunction={setIsMouseClick} HoverChangeFunction={setIsHover} />
         </div>
     )
 }

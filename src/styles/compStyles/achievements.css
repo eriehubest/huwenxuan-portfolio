@@ -18,3 +18,30 @@
   pointer-events: none;
   z-index: 0;
 }
+
+.layered-animations {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 16rem;
+  height: 16rem;
+  transform: scale(1.2);
+}
+
+.layered-animations .shape {
+  position: absolute;
+  overflow: visible;
+  width: 8rem;
+  height: 8rem;
+  stroke: currentColor;
+  fill: transparent;
+}
+
+.layered-animations .small.shape {
+  width: 1.5rem;
+  height: 1.5rem;
+  stroke: currentColor;
+  stroke-width: 2px;
+  fill: currentColor;
+}

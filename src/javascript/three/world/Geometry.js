@@ -41,7 +41,7 @@ function CreateCustomGeometry(radius = 1) {
 
   for (let f = 0; f < F.length; f++) {
     // random per face
-    color.setRGB(Math.random()/2 + 0.2, Math.random()/2 + 0.2, Math.random()/2 + 0.2);
+    color.setRGB(Math.random() /* Idk I just really like this */, Math.random()/2 + 0.2, Math.random()/2 + 0.2);
 
     const [a, b, d] = F[f]; // (a,b,c) but using d name to avoid confusion with color array index
     const tri = [V[a], V[b], V[d]];
