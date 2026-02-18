@@ -6,7 +6,9 @@ import constants from '../../javascript/constants'
 import { useGSAP } from '@gsap/react'
 import { SplitText, ScrollTrigger } from 'gsap/all'
 import AnimationTracker from '../../javascript/three/AnimationTracker'
-import Achievements from '../achievements/achievements'
+import Achievements from './Achievements'
+import Menu from './Menu'
+import CursorFollow from './CursorFollow'
 
 gsap.registerPlugin(SplitText, ScrollTrigger)
 
@@ -20,38 +22,7 @@ const Home = () => {
 
     const [focus, setFocus] = useState(animationTracker.currentFocus);
 
-    const topBarRef = useRef(null);
-    const midBarRef = useRef(null);
-    const botBarRef = useRef(null);
-
-    useGSAP(() => {
-        const dot = document.querySelector(".cursor-dot");
-        if (!dot) return;
-
-        gsap.set(dot, { xPercent: -50, yPercent: -50 });
-
-        const xTo = gsap.quickTo(dot, "x", {
-            duration: 0.3,
-            ease: "power3.out"
-        });
-
-        const yTo = gsap.quickTo(dot, "y", {
-            duration: 0.3,
-            ease: "power3.out"
-        });
-
-        const move = (e) => {
-            xTo(e.clientX);
-            yTo(e.clientY);
-        };
-
-        window.addEventListener("mousemove", move);
-
-        return () => {
-            window.removeEventListener("mousemove", move);
-        };
-    }, []);
-
+    // Page Flow Animation
     useGSAP(() => {
         let heroUpSplitText;
         let heroDownSplitText;
@@ -218,140 +189,17 @@ const Home = () => {
         };
     }, []);
 
-    useGSAP(() => {
-        const ctx = gsap.context(() => {
-            const settingsContainer = document.querySelector('.settings');
-            const settingsToggle = document.querySelector('.settings .toggle');
-            const settingsPage = document.querySelector('.settings .settings-page');
-
-            const top = topBarRef.current;
-            const mid = midBarRef.current;
-            const bot = botBarRef.current;
-            if (!top || !mid || !bot) return;
-
-            gsap.set([top, bot], { transformOrigin: "50% 50%" });
-
-            const burgerForTl = gsap.timeline({ paused: true, defaults: { duration: 0.25, ease: "power2.out" } });
-            burgerForTl
-                .to(top, { y: 10, rotate: 45, background: '#ffffff' }, 0)
-                .to(bot, { y: -10, rotate: -45, background: '#ffffff' }, 0)
-                .to(mid, { opacity: 0, scaleX: 0, background: '#ffffff' }, 0);
-
-            const burgerBackTl = gsap.timeline({ paused: true, defaults: { duration: 0.25, ease: "power2.out" } });
-            burgerBackTl
-                .to(top, { y: 0, rotate: 0, background: "#000000" }, 0)
-                .to(bot, { y: 0, rotate: 0, background: "#000000" }, 0)
-                .to(mid, { opacity: 1, scaleX: 1, background: "#000000" }, 0);
-
-            if (showSettings === null) {
-                settingsPage.classList.add('hidden')
-
-                gsap.set(settingsPage, {
-                    xPercent: -100,
-                })
-
-                return true;
-            }
-
-            if (showSettings) {
-                settingsPage.classList.remove('hidden')
-                settingsPage.classList.add('flex');
-
-                gsap.killTweensOf(settingsPage)
-                gsap.to(settingsPage, {
-                    xPercent: 0,
-                    ease: 'power2.out',
-                    duration: 1.5
-                })
-
-                burgerForTl.play();
-            } else {
-                gsap.killTweensOf(settingsPage);
-                gsap.to(settingsPage, {
-                    xPercent: -100,
-                    ease: 'power2.out',
-                    duration: 1.5,
-                    onComplete: () => {
-                        settingsPage.classList.remove('flex');
-                        settingsPage.classList.add('hidden');
-                    }
-                })
-
-                burgerBackTl.play();
-            }
-        })
-
-        return () => {
-            ctx.revert();
-        }
-    }, [showSettings]);
-
-    useGSAP(() => {
-        const ctx = gsap.context(() => {
-            if (!isMouseClick)
-                return;
-
-            const cursorDot = document.querySelector('.cursor-dot');
-
-            gsap.to(cursorDot, {
-                width: 30,
-                height: 30,
-                duration: 0.15,
-                background: "#ffffff"
-            })
-
-            gsap.to(cursorDot, {
-                width: isHover ? 20 : 15,
-                height: isHover ? 20 : 15,
-                duration: 0.14,
-                background: "#99a1af",
-                onComplete: () => {
-                    setIsMouseClick(false);
-                }
-            }, ">")
-        })
-
-        // console.log('changed')
-
-        return () => { ctx.revert() };;
-    }, [isMouseClick])
-
-    useGSAP(() => {
-        const ctx = gsap.context(() => {
-            if (isMouseClick) {
-                return;
-            }
-
-            const cursorDot = document.querySelector('.cursor-dot');
-
-            if (isHover) {
-                gsap.to(cursorDot, {
-                    width: 20,
-                    height: 20,
-                    opacity: 0.6,
-                    duration: 0.2,
-                })
-            } else {
-                gsap.to(cursorDot, {
-                    width: 15,
-                    height: 15,
-                    opacity: 1,
-                    duration: 0.2,
-                })
-            }
-        })
-
-        return () => ctx.revert();
-    }, [isHover])
-
+    // Set Journey Length
     useEffect(() => {
         setCurrentMaxJourney(constants.home.journey.length);
     }, []);
 
+    // Set Focus
     useEffect(() => {
         return animationTracker.onFocusChange(setFocus);
     }, []);
 
+    // Refresh Scroll Trigger Progress
     useEffect(() => {
         const sync = () => {
             if (!document.hidden) {
@@ -386,38 +234,15 @@ const Home = () => {
 
     return (
         <div className='home-page relative'>
-            <div className="pageIndicator fixed bottom-0 w-full h-[50px] right-0 flex-center z-999">
+            <div className="opacity-20 pageIndicator fixed bottom-0 w-full h-[50px] right-0 flex-center z-99">
                 <h1 className='text-center font-CDM text-xl'>
                     {focus}
                 </h1>
             </div>
 
-            <div className={`cursor-dot pointer-events-none fixed top-0 left-0 w-4 h-4 rounded-full bg-gray-400 z-9999`} />
+            <CursorFollow setIsHover={setIsHover} setIsMouseClick={setIsMouseClick} isHover={isHover} isMouseClick={isMouseClick} />
 
-            <div className="settings fixed z-1000 top-0 left-0 flex justify-start items-start">
-                <div
-                    className="toggle relative click-toggle w-[30px] h-[30px] m-5 cursor-pointer flex flex-col justify-around items-center z-1001"
-                    onClick={() => { setIsMouseClick(true); setShowSettings(v => (typeof v === 'undefined' ? true : !v)); }}
-                    onMouseEnter={() => { setIsHover(true) }}
-                    onMouseLeave={() => { setIsHover(false) }}
-                >
-                    <div ref={topBarRef} className="relative undeerline w-full bg-black h-[2px]"></div>
-                    <div ref={midBarRef} className="relative undeerline bg-black w-full h-[2px]"></div>
-                    <div ref={botBarRef} className="relative undeerline w-full bg-black h-[2px]"></div>
-                </div>
-
-                <div className={`settings-page inset-0 absolute top-0 left-0 w-screen h-screen flex-col justify-center items-center bg-neutral-700 p-20 text-white`}>
-                    <div className="settings-strips absolute inset-0 flex pointer-none z-0 " aria-hidden="true" />
-
-                    <h2 className='text-[3rem] leading-2 w-full'>
-                        Current Page:
-                    </h2>
-
-                    <h1 className='text-[10rem] font-CDR w-full'>
-                        {focus}
-                    </h1>
-                </div>
-            </div>
+            <Menu setIsMouseClick={setIsMouseClick} setIsHover={setIsHover} setShowSettings={setShowSettings} isMouseClick={isMouseClick} isHover={isHover} showSettings={showSettings}/>
 
             <div className="hero relative">
                 <div className="text">

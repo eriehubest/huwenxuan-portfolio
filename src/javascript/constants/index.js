@@ -120,10 +120,18 @@ const constants =
                 ],
                 [
                     [
-                        [`
+                        `
                             <div class="w-full h-full bg-black/5 rounded-lg overflow-x-hidden flex">
-                                <div class="certificates flex-1 w-full h-full flex justify-center items-center">
-                                    <h1 class="text-3xl">Achievements</h1>
+                                <div class="certificates flex-1 w-full h-full flex flex-col justify-end items-center">
+                                    <h1 class="flex-1 text-[2.2rem] flex-center">Achievements</h1>
+
+                                    <ul class="h-full flex-2 mb-10 flex flex-col justify-around">
+                                        <li class="bg-black/10 p-2 rounded-md">	•	AMC 12B — Distinction (Top 5%), 2025</li>
+                                        <li class="bg-black/10 p-2 rounded-md">	•	UKMT SMC — Gold, 2025</li>
+                                        <li class="bg-black/10 p-2 rounded-md">	•	UKMT IMC — Gold, 2023-2024</li>
+                                        <li class="bg-black/10 p-2 rounded-md">	•	UKMT JMO — Distinction, 2023</li>
+                                        <li class="bg-black/10 p-2 rounded-md">	•	Cayley Olympiad — Merit, 2024</li>
+                                    </ul>
                                 </div>
 
                                 <div class="animation flex-1 w-full h-full flex justify-center items-center">
@@ -154,7 +162,26 @@ const constants =
                                     </div>
                                 </div>
                             </div>
-                        `]
+                        `
+                    ],
+                    [
+                        `
+                            <div class="w-full h-full bg-black/5 rounded-lg overflow-x-hidden flex">
+                                <div class="certificates flex-1 w-full h-full flex flex-col justify-end items-center">
+                                    <h1 class="flex-1 text-[2.2rem] flex-center">Achievements</h1>
+
+                                    <ul class="h-full flex-2 mb-10 flex flex-col justify-around">
+                                        <li class="bg-black/10 p-2 rounded-md">	•	USACO Gold Qualifier</li>
+                                        <li class="bg-black/10 p-2 rounded-md">	•	C++ Proficiency</li>
+                                        <li class="bg-black/10 p-2 rounded-md">	•	Fluent with Javascript, WEBGL</li>
+                                    </ul>
+                                </div>
+
+                                <div class="flex-1 w-full h-full">
+                                    hi
+                                </div>
+                            </div>
+                        `
                     ]
                 ],
 
